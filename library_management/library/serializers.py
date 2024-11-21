@@ -20,15 +20,3 @@ class LoanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Loan
         fields = ['id', 'book_title', 'borrowed_by', 'borrowed_date', 'returned_date', 'is_returned']
-
-
-# from rest_framework import serializers
-
-# class BorrowedBookSerializer(serializers.ModelSerializer):
-#     book_title = serializers.CharField(source='book.title', read_only=True)
-#     borrowed_by = serializers.CharField(source='borrower.name', read_only=True)  # Include borrower's name
-#     is_returned = serializers.BooleanField(source='is_returned', read_only=True)
-
-#     class Meta:
-#         model = BorrowedBook
-#         fields = ['id', 'book_title', 'borrowed_by', 'borrowed_date', 'returned_date', 'is_returned']

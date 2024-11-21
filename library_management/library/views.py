@@ -94,38 +94,7 @@ class ReturnBook(APIView):
 
         return Response({"message": "Book returned successfully."}, status=status.HTTP_200_OK)
 
-# class BorrowerBorrowedBooks(generics.ListAPIView):
-#     serializer_class = LoanSerializer
 
-#     def get_queryset(self):
-#         borrower_id = self.kwargs['borrower_id']
-#         # Check if the borrower exists
-#         if not Borrower.objects.filter(id=borrower_id).exists():
-#             raise NotFound(detail="Borrower not found.")
-        
-#         return Loan.objects.filter(borrower_id=borrower_id, returned_date__isnull=True)
-
-# class BorrowerBorrowedBooks(generics.ListAPIView):
-#     """
-#     API view to retrieve all active loans for a specific borrower.
-
-#     Methods
-#     -------
-#     get_queryset():
-#         Returns a queryset of loans that are not returned for the specified borrower.
-#     """
-#     serializer_class = LoanSerializer
-
-#     def get_queryset(self):
-#         borrower_id = self.kwargs['borrower_id']
-        
-#         # Check if the borrower exists
-#         if not Borrower.objects.filter(id=borrower_id).exists():
-#             raise NotFound(detail="Borrower not found.")
-        
-#         # Return loans that are not returned
-#         return Loan.objects.filter(borrower_id=borrower_id, is_returned=False)
-    
 class BorrowerBorrowedBooks(generics.ListAPIView):
     """
     API view to retrieve all active loans for a specific borrower.
