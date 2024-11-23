@@ -8,7 +8,16 @@ from rest_framework import generics
 from django.utils import timezone
 
 class BookListCreate(APIView):
+    """
+    API view to retrieve list of books or create a new book.
+
+    - GET: Returns a list of all books. If 'available' query parameter is provided,
+           it filters the books based on their availability.
+    - POST: Creates a new book with the provided data.
+            Returns the created book data if successful, otherwise returns errors.
+    """
     def post(self, request):
+        # Handles POST requests to create a new book.
         serializer = BookSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -16,6 +25,8 @@ class BookListCreate(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
+        # Handles GET requests to retrieve books.
+        # Filters books by availability if the 'available' query parameter is provided.
         available = request.query_params.get('available', None)
         books = Book.objects.all()
         if available is not None:
@@ -24,7 +35,17 @@ class BookListCreate(APIView):
         return Response(serializer.data)
 
 class BorrowBook(APIView):
+    """
+    API view to handle borrowing a book.
+
+    Methods:
+        post: Allows a borrower to borrow a book if eligible.
+    """
     def post(self, request):
+        """
+        Handles POST requests to borrow a book.
+        Ensures the book and borrower exist, checks eligibility, and creates a loan record.
+        """
         book_id = request.data.get('book_id')
         borrower_id = request.data.get('borrower_id')
 
@@ -66,7 +87,17 @@ class BorrowBook(APIView):
         
 
 class ReturnBook(APIView):
+    """
+    API view to handle returning a borrowed book.
+
+    Methods:
+        post: Marks a book as returned and updates its availability status.
+    """
     def post(self, request):
+        """
+        Handles POST requests to return a borrowed book.
+        Finds the active loan for the book, marks it as returned, and updates the book's availability.
+        """
         book_id = request.data.get('book_id')
         
         # Check if book_id is provided
@@ -102,12 +133,9 @@ class BorrowerBorrowedBooks(generics.ListAPIView):
     This view returns a list of borrowed books along with the count of currently borrowed books
     that have not been returned.
 
-    Methods
-    -------
-    get_queryset():
-        Returns a queryset of loans that are not returned for the specified borrower.
-    get():
-        Returns a response containing the count of borrowed books and the list of borrowed books.
+    Methods:-
+    get_queryset(): Returns a queryset of loans that are not returned for the specified borrower.
+    get(): Returns a response containing the count of borrowed books and the list of borrowed books.
     """
     serializer_class = LoanSerializer
 
@@ -145,9 +173,19 @@ class BorrowerBorrowedBooks(generics.ListAPIView):
 
 
 class LoanHistory(generics.ListAPIView):
+    """
+    API view to retrieve the loan history for a borrower.
+
+    Methods:
+        get_queryset: Returns all loans (past and current) for a borrower.
+    """
     serializer_class = LoanSerializer
 
     def get_queryset(self):
+        """
+        Retrieves all loans for the specified borrower.
+        Raises NotFound if the borrower does not exist.
+        """
         borrower_id = self.kwargs['borrower_id']
         # Check if the borrower exists
         if not Borrower.objects.filter(id=borrower_id).exists():
